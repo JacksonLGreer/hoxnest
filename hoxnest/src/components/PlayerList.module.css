@@ -1,0 +1,8 @@
+.listTop {
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr 3fr 3fr 3fr 3fr;
+    font-weight: bold;
+    padding: 10px 0;
+    border-bottom: 2px solid #FDB927;
+    text-align: center;
+}
