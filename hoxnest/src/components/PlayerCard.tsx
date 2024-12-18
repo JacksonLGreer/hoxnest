@@ -4,8 +4,8 @@ export default function PlayerCard( {player} : {player:any} ) {
 
     return (
         <div className={styles.playerStyle}>
-            <p>{player.name}</p>
-            <p>{player.pos}</p>
+            <p>{player.Name}</p>
+            <p>{player.Position}</p>
             <p>{player.pts}</p>
             <p>{player.ast}</p>
             <p>{player.reb}</p>

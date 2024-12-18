@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database Connection
+// Database Declaration
 const PORT = process.env.PORT || 3001;
 let db = new sqlite3.Database('./hoxDB.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
@@ -15,6 +15,7 @@ let db = new sqlite3.Database('./hoxDB.db', sqlite3.OPEN_READWRITE, (err) => {
     console.log('Connected to the HOX Database');
 });
 
+// Server start
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 })

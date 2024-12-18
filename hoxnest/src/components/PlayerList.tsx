@@ -1,33 +1,32 @@
 "use client"
 
 import react from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard"
 import styles from "./PlayerList.module.css";
 
+
 export default function PlayerList() {
     // This component displays a list of all the Hawks players and their main counting stats
-    const [playerList, setPlayerList] = useState([
-        {
-            name: "Trae Young",
-            pos: "PG",
-            pts: 1,
-            ast: 12,
-            reb: 1,
-            stl: 1,
-            blk: 1
-        },
-        {
-            name: "Jalen Johnson",
-            pos: "PF",
-            pts: 2,
-            ast: 1,
-            reb: 10,
-            stl: 2,
-            blk: 2
-        }
-    ])
+    const [playerList, setPlayerList] = useState([]);
 
+    
+    useEffect(() =>{
+        const fetchPlayers = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/players`,);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    return console.error('Error fetching players: ', errorData.message);  
+                }
+                const playerData = await response.json();
+                setPlayerList(playerData);
+            } catch (err) {
+                console.log('Error in fetching player data: ', err);
+            }
+        }
+        fetchPlayers(); // IMPORTANT: remember to call the function here!
+    }, [])
     return (
         <div>
             <div className={styles.listTop}>
