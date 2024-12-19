@@ -7,6 +7,8 @@ import styles from "./PlayerList.module.css";
 
 
 export default function PlayerList() {
+
+    
     // This component displays a list of all the Hawks players and their main counting stats
     const [playerList, setPlayerList] = useState([]);
 
@@ -26,7 +28,46 @@ export default function PlayerList() {
             }
         }
         fetchPlayers(); // IMPORTANT: remember to call the function here!
+        fetchStats();
     }, [])
+
+    // fetches whole teams stats
+    const statsOptions = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': '9e140c858bmsh3a85aced8c64059p1e3242jsn5a6f2a6de09d',
+            'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
+        }
+    };
+    const fetchStats = async () => {
+        try {
+                const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=1046&season=2024`, statsOptions);
+                const result = await response.text();
+                console.log(result);           
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // fetches the players on the Hawks, want to get specific player IDs
+    const playerIDUrl = 'https://api-nba-v1.p.rapidapi.com/players?team=1&season=2024';
+    const playerIDOptions = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': '9e140c858bmsh3a85aced8c64059p1e3242jsn5a6f2a6de09d',
+            'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
+        }
+    };
+    const fetchPlayerIDs = async () => {
+        try {
+            const response = await fetch(playerIDUrl, playerIDOptions);
+            const result = await response.text();
+            console.log(result);
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
     return (
         <div>
             <div className={styles.listTop}>
