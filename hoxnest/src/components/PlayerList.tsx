@@ -42,12 +42,15 @@ export default function PlayerList() {
     const fetchStats = async () => {
         try {
                 const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=1046&season=2024`, statsOptions);
-                const result = await response.text();
-                console.log(result);           
+                const result = await response.json();
+                const ppg = result.response.reduce((a: number,v: {points: number}) => a = a + v.points, 0) / (result.response.length - 1);
+                console.log(ppg);
         } catch (err) {
             console.error(err);
         }
     }
+
+    
 
     // fetches the players on the Hawks, want to get specific player IDs
     const playerIDUrl = 'https://api-nba-v1.p.rapidapi.com/players?team=1&season=2024';
