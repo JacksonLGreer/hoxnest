@@ -10,6 +10,7 @@ export default function PlayerList() {
     
     // This component displays a list of all the Hawks players and their main counting stats
     const [playerList, setPlayerList] = useState([]);
+    const [idList, setidList] = useState([1046]);
 
     
     useEffect(() =>{
@@ -27,7 +28,11 @@ export default function PlayerList() {
             }
         }
         fetchPlayers(); // IMPORTANT: remember to call the function here!
-        fetchStats();
+        //fetchPlayerIDs();
+        //getGame();
+        //idList.map(id => {
+          //  fetchStats(id);
+        //})
     }, [])
 
     // fetches a specific player's stats from the API
@@ -39,16 +44,16 @@ export default function PlayerList() {
             'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
         }
     };
-    const fetchStats = async () => {
+    const fetchStats = async (id: number) => {
         try {
-                const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=1046&season=2024`, statsOptions);
+                const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=${id}&season=2024`, statsOptions);
                 const result = await response.json();
-                const ppg = result.response.reduce((a: number,v: {points: number}) => a = a + v.points, 0) / (result.response.length - 1);
-                const rpg = result.response.reduce((a: number,v: {totReb: number}) => a = a + v.totReb, 0) / (result.response.length - 1);
-                const apg = result.response.reduce((a: number,v: {assists: number}) => a = a + v.assists, 0) / (result.response.length - 1);
-                const spg = result.response.reduce((a: number,v: {steals: number}) => a = a + v.steals, 0) / (result.response.length - 1);
-                const bpg = result.response.reduce((a: number,v: {blocks: number}) => a = a + v.blocks, 0) / (result.response.length - 1);
-                const id = 1046;
+                
+                const ppg = (result.response.slice(3).reduce((a: number,v: {points: number}) => a = a + v.points, 0) / (result.response.length -3)).toFixed(1);
+                const rpg = (result.response.slice(3).reduce((a: number,v: {totReb: number}) => a = a + v.totReb, 0) / (result.response.length -3)).toFixed(1);
+                const apg = (result.response.slice(3).reduce((a: number,v: {assists: number}) => a = a + v.assists, 0) / (result.response.length -3)).toFixed(1);
+                const spg = (result.response.slice(3).reduce((a: number,v: {steals: number}) => a = a + v.steals, 0) / (result.response.length -3)).toFixed(1);
+                const bpg = (result.response.slice(3).reduce((a: number,v: {blocks: number}) => a = a + v.blocks, 0) / (result.response.length -3)).toFixed(1);
                 console.log(result.response)
 
                 try {
@@ -75,6 +80,25 @@ export default function PlayerList() {
         }
     }
 
+
+    const url = 'https://api-nba-v1.p.rapidapi.com/games?id=14087';
+const options = {
+	method: 'GET',
+	headers: {
+		'x-rapidapi-key': '9e140c858bmsh3a85aced8c64059p1e3242jsn5a6f2a6de09d',
+		'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
+	}
+};
+const getGame = async () => {
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        console.log(result);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
     
 
     // fetches the players on the Hawks, want to get specific player IDs
@@ -89,7 +113,7 @@ export default function PlayerList() {
     const fetchPlayerIDs = async () => {
         try {
             const response = await fetch(playerIDUrl, playerIDOptions);
-            const result = await response.text();
+            const result = await response.json();
             console.log(result);
         } catch (error) {
             console.error(error);
