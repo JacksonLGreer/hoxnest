@@ -31,6 +31,20 @@ app.get('/players', (req,res) => {
     });
 });
 
+app.post('/player/update_stats', (req,res) => {
+    const {id, ppg, apg, rpg, spg, bpg} = req.body;
+
+    // Insert the stats into the DB
+    const sql = 'UPDATE Players SET ppg = ?, apg = ?, rpg = ?, spg = ?, bpg = ? WHERE id = ?';
+    db.run(sql, [ppg, apg, rpg, spg, bpg, id], (err) => {
+        if (err) {
+            console.error('Error inserting stats', err.message);
+        } else {
+            res.status(201).send('Stats Uploaded');
+        }
+    });
+});
+
 const url = 'https://api-nba-v1.p.rapidapi.com/players/statistics?team=1&season=2024';
 const fetchStats = async () => {
     try {

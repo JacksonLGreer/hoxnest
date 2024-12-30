@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard"
 import styles from "./PlayerList.module.css";
 
-
 export default function PlayerList() {
 
     
@@ -31,7 +30,8 @@ export default function PlayerList() {
         fetchStats();
     }, [])
 
-    // fetches whole teams stats
+    // fetches a specific player's stats from the API
+    // Currently only Trae Young player ID 1046
     const statsOptions = {
         method: 'GET',
         headers: {
@@ -44,7 +44,32 @@ export default function PlayerList() {
                 const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=1046&season=2024`, statsOptions);
                 const result = await response.json();
                 const ppg = result.response.reduce((a: number,v: {points: number}) => a = a + v.points, 0) / (result.response.length - 1);
-                console.log(ppg);
+                const rpg = result.response.reduce((a: number,v: {totReb: number}) => a = a + v.totReb, 0) / (result.response.length - 1);
+                const apg = result.response.reduce((a: number,v: {assists: number}) => a = a + v.assists, 0) / (result.response.length - 1);
+                const spg = result.response.reduce((a: number,v: {steals: number}) => a = a + v.steals, 0) / (result.response.length - 1);
+                const bpg = result.response.reduce((a: number,v: {blocks: number}) => a = a + v.blocks, 0) / (result.response.length - 1);
+                const id = 1046;
+                console.log(result.response)
+
+                try {
+                    const result = await fetch('http://localhost:3001/player/update_stats', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ppg: ppg,
+                            apg: apg,
+                            rpg: rpg,
+                            spg: spg,
+                            bpg: bpg,
+                            id: id,
+                        }),
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+                
         } catch (err) {
             console.error(err);
         }
