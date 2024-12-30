@@ -6,11 +6,11 @@ export default function PlayerCard( {player} : {player:any} ) {
         <div className={styles.playerStyle}>
             <p>{player.Name}</p>
             <p>{player.Position}</p>
-            <p>{player.pts}</p>
-            <p>{player.ast}</p>
-            <p>{player.reb}</p>
-            <p>{player.stl}</p>
-            <p>{player.blk}</p>
+            <p>{player.ppg}</p>
+            <p>{player.apg}</p>
+            <p>{player.rpg}</p>
+            <p>{player.spg}</p>
+            <p>{player.bpg}</p>
 
         </div>
     )
