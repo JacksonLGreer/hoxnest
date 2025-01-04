@@ -31,6 +31,18 @@ app.get('/players', (req,res) => {
     });
 });
 
+// Endpoint to retreive player IDs
+app.get('/players/id', (req,res) => {
+    db.all('SELECT id FROM Players', (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json(rows);
+        }
+    })
+})
+
+// Endpoint to update player stats
 app.post('/player/update_stats', (req,res) => {
     const {id, ppg, apg, rpg, spg, bpg} = req.body;
 
