@@ -1,0 +1,8 @@
+.gameStyle {
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr 3fr 3fr 3fr;
+    align-items: center;
+    padding: 10px 5px;    
+    border-bottom: 1px solid #FDB927;
+    text-align: center;
+}

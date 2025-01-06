@@ -20,6 +20,8 @@ app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 })
 
+
+// PLAYER ENDPOINTS
 // Endpoint to retrieve players
 app.get('/players', (req,res) => {
     db.all('SELECT * FROM Players', (err, rows) => {
@@ -57,19 +59,31 @@ app.post('/player/update_stats', (req,res) => {
     });
 });
 
-const url = 'https://api-nba-v1.p.rapidapi.com/players/statistics?team=1&season=2024';
-const fetchStats = async () => {
-    try {
-        const response = await(url, {
-            method: 'GET',
-            headers: {
-                'x-rapidapi-key': '9e140c858bmsh3a85aced8c64059p1e3242jsn5a6f2a6de09d',
-		        'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
-            }
-        });
-        const result = await response.text();
-        console.log(result);
-    } catch (error) {
-        console.log(error);
-    }
-}
+
+
+// GAME ENDPOINTS
+// Endpoint to retrieve games
+app.get('/games', (req,res) => {
+    db.all('SELECT * FROM Games', (err, rows) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+        } else {
+            res.json(rows);
+        }
+    });
+});
+
+// Endpoint to update Hawks games
+app.post('/games/update_games', (req,res) => {
+    const {opponent, location, hawksScore, oppScore, date, gameId} = req.body;
+
+    // Insert the stats into the DB
+    const sql = 'INSERT INTO Games (opponent, location, hawksScore, oppScore, date, gameId) VALUES (?, ?, ?, ?, ?, ?)';
+    db.run(sql, [opponent, location, hawksScore, oppScore, date, gameId], (err) => {
+        if (err) {
+            console.error('Error inserting games', err.message);
+        } else {
+            res.status(201).send('Games Uploaded');
+        }
+    });
+});
