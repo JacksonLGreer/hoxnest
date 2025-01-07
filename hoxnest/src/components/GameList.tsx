@@ -55,7 +55,7 @@ export default function GameList() {
                 }
                 console.log(opponent, hawksScore, oppScore, location, date, gameId);
                 try {
-                    const send = await fetch('http://localhost:3001/games/update_games', {
+                    const send = await fetch('http://localhost:3001/games/insert_games', {
                         method: 'POST',
                         headers: {
                             'Content-Type' : 'application/json',
