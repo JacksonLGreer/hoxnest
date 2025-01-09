@@ -59,6 +59,19 @@ app.post('/player/update_stats', (req,res) => {
     });
 });
 
+app.post('/playerstats/insert_stats', (req, res) => {
+    const {playerID, gameID, points, assists, rebounds, steals, blocks} = req.body;
+
+    const sql = 'INSERT INTO PlayerStats (playerID, gameID, points, assists, rebounds, steals, blocks) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    db.run(sql, [playerID, gameID, points, assists, rebounds, steals, blocks], (err) => {
+        if (err) {
+            console.error(err);
+        } else {
+            res.status(201).send('Player Stats Uploaded')
+        }
+    });
+});
+
 
 
 // GAME ENDPOINTS
@@ -102,11 +115,11 @@ app.get('/standings', (req,res) => {
 
 // Endpoint to insert eastern conference standings
 app.post('/standings/insert_standings', (req,res) => {
-    const {team, wins, losses} = req.body;
+    const {team, wins, losses, logo} = req.body;
 
     // Insert the standings into the DB
-    const sql = 'INSERT INTO Standings (team, wins, losses) VALUES (?, ?, ?)';
-    db.run(sql, [team, wins, losses], (err) => {
+    const sql = 'INSERT INTO Standings (team, wins, losses, logo) VALUES (?, ?, ?, ?)';
+    db.run(sql, [team, wins, losses, logo], (err) => {
         if (err) {
             console.error('Error inserting standings', err.message);
         } else {

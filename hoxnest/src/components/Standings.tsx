@@ -48,7 +48,7 @@ export default function Standings() {
                 let team = result.response[i].team.nickname;
                 let wins = result.response[i].win.total;
                 let losses = result.response[i].loss.total;
-
+                let logo = result.response[i].team.logo;
 
                 try {
                     const send = await fetch('http://localhost:3001/standings/insert_standings', {
@@ -60,6 +60,7 @@ export default function Standings() {
                             team: team,
                             wins: wins,
                             losses: losses,
+                            logo: logo,
                         })
                     });
                 } catch (err) {
