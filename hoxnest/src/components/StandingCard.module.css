@@ -6,3 +6,8 @@
     border-bottom: 1px solid #FDB927;
     text-align: center;
 }
+
+.logo {
+    width: 20px;
+    opacity:0.5;
+}
