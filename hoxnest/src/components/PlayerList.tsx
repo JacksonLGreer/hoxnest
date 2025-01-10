@@ -11,16 +11,9 @@ export default function PlayerList() {
     // This component displays a list of all the Hawks players and their main counting stats
     let [playerList, setPlayerList] = useState([]);
     let [idList, setidList] = useState({});
-    /**
-     * Mo Gueye - 3939
-     * David Roddy - 3483
-     * Kobe Bufkin - 3938
-     * Larry Nance - 385
-     */
     
     useEffect(() =>{
-        //getStats();
-        fetchPlayerStats(1046);
+        getStats();
         fetchPlayers(); // IMPORTANT: remember to call the function here!
     }, [])
 
@@ -41,7 +34,9 @@ export default function PlayerList() {
         }
     }
 
-    // fetches a specific player's stats from the API and calculates the averages
+    // Calls the API to receive a player's game logs and insert each games stats into the PlayerGameStats table
+    // Ignores duplicate entries by using the player ID and game ID as a composite primary key
+    // This is where I get player stats from API
     const statsOptions = {
         method: 'GET',
         headers: {
@@ -49,117 +44,202 @@ export default function PlayerList() {
             'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
         }
     };
-    const fetchPlayerStats = async (id: number) => {
-        
+    const fetchPlayerGameLog = async (id: number) => {   
         try {
                 const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=${id}&season=2024`, statsOptions);
                 const result = await response.json();
-                
-                // This is to prevent the preseason games from being included in the stats
-                // The four game IDs are the Hawks preseason games that are also returned by the API
-                let slice = 0;
+                console.log(result.response);
                 for (let i = 0; i < result.response.length; i++) {
-                    if (result.response[i].game.id == 14060) {
-                        slice++;
-                    }
-                    if (result.response[i].game.id == 14067) {
-                        slice++;
-                    }
-                    if (result.response[i].game.id == 14087) {
-                        slice++;
-                    }
-                    if (result.response[i].game.id == 14104) {
-                        slice++;
-                    }
+                    let points = result.response[i].points;
+                    let assists = result.response[i].assists;
+                    let rebounds = result.response[i].totReb;
+                    let steals = result.response[i].steals;
+                    let blocks = result.response[i].blocks;
+                    let gameID = result.response[i].game.id;
+                    if (gameID != 14060 && gameID != 14067 && gameID != 14087 && gameID != 14104) { //ignore preseason games
+                        try {
+                            const result = await fetch('http://localhost:3001/player/insert_stats', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    playerID: id,
+                                    gameID: gameID,
+                                    points: points,
+                                    assists: assists,
+                                    rebounds: rebounds,
+                                    steals: steals,
+                                    blocks: blocks,
+                                }),
+                            });
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }       
                 }
 
-                const ppg = (result.response.slice(slice).reduce((a: number,v: {points: number}) => a = a + v.points, 0) / (result.response.length -3)).toFixed(1);
-                const rpg = (result.response.slice(slice).reduce((a: number,v: {totReb: number}) => a = a + v.totReb, 0) / (result.response.length -3)).toFixed(1);
-                const apg = (result.response.slice(slice).reduce((a: number,v: {assists: number}) => a = a + v.assists, 0) / (result.response.length -3)).toFixed(1);
-                const spg = (result.response.slice(slice).reduce((a: number,v: {steals: number}) => a = a + v.steals, 0) / (result.response.length -3)).toFixed(1);
-                const bpg = (result.response.slice(slice).reduce((a: number,v: {blocks: number}) => a = a + v.blocks, 0) / (result.response.length -3)).toFixed(1);
-                console.log(result.response)
-                console.log( ppg, apg, rpg, spg, bpg);
+                
+                
+        } catch (err) {
+            console.error(err);
+        }
+    } // fetchPlayerGameLogs
 
+
+    // Uses a player's game logs that are stored in the DB to calculate their stat totals
+    const getPlayerTotals = async (id: number) => {  
+        try {
+            try {
+                const response = await fetch(`http://localhost:3001/player/gamestats?id=${id}`,);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    return console.error('Error fetching players: ', errorData.message);  
+                }
+                const playerData = await response.json();
+                let totPoints = 0;
+                let totAssists = 0;
+                let totRebounds = 0;
+                let totSteals = 0;
+                let totBlocks = 0;
+                let gamesPlayed = playerData.length;
+                // Adding up stats
+                for (let i = 0; i < gamesPlayed; i++) {
+                    totPoints = totPoints + playerData[i].points;
+                    totAssists = totAssists + playerData[i].assists;
+                    totRebounds = totRebounds + playerData[i].rebounds;
+                    totSteals = totSteals + playerData[i].steals;
+                    totBlocks = totBlocks + playerData[i].blocks;
+
+                }
+                console.log(totPoints);
+                // Update fields in DB with stats
                 try {
-                    const result = await fetch('http://localhost:3001/player/update_stats', {
+                    const result = await fetch('http://localhost:3001/player/update_totals', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
+                            id: id,
+                            totPoints: totPoints,
+                            totAssists: totAssists,
+                            totRebounds: totRebounds,
+                            totSteals: totSteals,
+                            totBlocks: totBlocks,
+                            gamesPlayed: gamesPlayed,
+                        }),
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            } catch (err) {
+                console.log('Error in fetching player data: ', err);
+            }        
+
+        } catch (err) {
+            console.error(err);
+        }
+    } // getPlayerTotals
+
+    // Uses a player's game logs that are stored in the DB to calculate their stat averages
+    const getPlayerAverages = async (id: number) => {  
+        try {
+            try {
+                const response = await fetch(`http://localhost:3001/player/gamestats?id=${id}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    return console.error('Error fetching players: ', errorData.message);  
+                }
+                const playerData = await response.json();
+                let totPoints = 0;
+                let totAssists = 0;
+                let totRebounds = 0;
+                let totSteals = 0;
+                let totBlocks = 0;
+                let gamesPlayed = playerData.length;
+                for (let i = 0; i < gamesPlayed; i++) {
+                    totPoints = totPoints + playerData[i].points;
+                    totAssists = totAssists + playerData[i].assists;
+                    totRebounds = totRebounds + playerData[i].rebounds;
+                    totSteals = totSteals + playerData[i].steals;
+                    totBlocks = totBlocks + playerData[i].blocks;
+                }
+                const ppg = (totPoints / gamesPlayed).toFixed(1);
+                const apg = (totAssists / gamesPlayed).toFixed(1);
+                const rpg = (totRebounds / gamesPlayed).toFixed(1);
+                const spg = (totSteals / gamesPlayed).toFixed(1);
+                const bpg = (totBlocks / gamesPlayed).toFixed(1);
+                console.log(ppg, apg, rpg, spg, bpg);
+                // Update fields in DB with stats
+                try {
+                    const result = await fetch('http://localhost:3001/player/update_averages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id: id,
                             ppg: ppg,
                             apg: apg,
                             rpg: rpg,
                             spg: spg,
                             bpg: bpg,
-                            id: id,
                         }),
                     });
                 } catch (err) {
                     console.error(err);
                 }
-                
+            } catch (err) {
+                console.log('Error in fetching player data: ', err);
+            }        
         } catch (err) {
             console.error(err);
         }
-    }
+    } // getPlayerAverages
 
-    // Fetches the players stats from the API and calculates the totals, not averages
-    const fetchPlayerTotals = async (id: number) => {
-        // preseason IDs - 14060, 14067, 14087, 14104
+    
+    // Uses a game ID to pull stats from the API and puts all of the Hawks players stats into the PlayerGameStats table
+    const updateGameLog = async (gameID: number) => {
         try {
-                const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=${id}&season=2024`, statsOptions);
-                const result = await response.json();
-                let slice = 0;
-                for (let i = 0; i < result.response.length; i++) {
-                    if (result.response[i].game.id == 14060) {
-                        slice++;
+            const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?game=${gameID}`, statsOptions);
+            const result = await response.json();
+            console.log(result.response[1])
+            for (let i = 0; i < result.response.length; i++) {
+                console.log(result.response[i]);
+                if (result.response[i].team.nickname === "Hawks") {
+                    let points = result.response[i].points;
+                    let assists = result.response[i].assists;
+                    let rebounds = result.response[i].totReb;
+                    let steals = result.response[i].steals;
+                    let blocks = result.response[i].blocks;
+                    let playerID = result.response[i].player.id;
+                    try {
+                        const result = await fetch('http://localhost:3001/player/insert_stats', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                playerID: playerID,
+                                gameID: gameID,
+                                points: points,
+                                assists: assists,
+                                rebounds: rebounds,
+                                steals: steals,
+                                blocks: blocks,
+                            }),
+                        });
+                    } catch (err) {
+                        console.error(err);
                     }
-                    if (result.response[i].game.id == 14067) {
-                        slice++;
-                    }
-                    if (result.response[i].game.id == 14087) {
-                        slice++;
-                    }
-                    if (result.response[i].game.id == 14104) {
-                        slice++;
-                    }
-                }
-
-                const points = (result.response.slice(slice).reduce((a: number,v: {points: number}) => a = a + v.points, 0));
-                const rebounds = (result.response.slice(slice).reduce((a: number,v: {totReb: number}) => a = a + v.totReb, 0));
-                const assists = (result.response.slice(slice).reduce((a: number,v: {assists: number}) => a = a + v.assists, 0));
-                const steals = (result.response.slice(slice).reduce((a: number,v: {steals: number}) => a = a + v.steals, 0));
-                const blocks = (result.response.slice(slice).reduce((a: number,v: {blocks: number}) => a = a + v.blocks, 0));
-                console.log(points, rebounds, assists, blocks, steals);
-                console.log(result.response);
-
-                /** Not trying to put these in DB 
-                try {
-                    const result = await fetch('http://localhost:3001/player/update_stats', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            points: points,
-                            assists: assists,
-                            rebounds: rebounds,
-                            steals: steals,
-                            blocks: blocks,
-                            id: id,
-                        }),
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
-                    */
-                
+                } // if
+            } // for
         } catch (err) {
-            console.error(err);
+            console.error("Error updating game log: " + err);
         }
-    }
+    } // updateGameLog
+
 
     // Fetches and returns the IDs from the database
     const fetchPlayerIDs = async () => {
@@ -172,7 +252,7 @@ export default function PlayerList() {
         } catch (error) {
             console.error(error);
         }
-    }
+    } // fetchPlayerIDs
 
     // function to retrieve the stats of all the players on the Hawks and put it into the DB
     const getStats = () => {
@@ -180,13 +260,21 @@ export default function PlayerList() {
         .then((ids) => {
             const idArray = ids;
             idArray?.map((id) => {
-                fetchPlayerStats(id);
+                getPlayerTotals(id);
+                getPlayerAverages(id);
             })
         })
        .catch((err) => {
         console.error("Error fetching playerIDs in getStats", err);
        })
     }
+
+    const getStatsID = async (id: number) => {
+        fetchPlayerGameLog(id);
+        getPlayerAverages(id);
+        getPlayerTotals(id);
+    }
+    
 
     return (
         <div>

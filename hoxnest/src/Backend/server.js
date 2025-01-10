@@ -44,8 +44,8 @@ app.get('/players/id', (req,res) => {
     })
 })
 
-// Endpoint to update player stats
-app.post('/player/update_stats', (req,res) => {
+// Endpoint to update player averages
+app.post('/player/update_averages', (req,res) => {
     const {id, ppg, apg, rpg, spg, bpg} = req.body;
 
     // Insert the stats into the DB
@@ -59,15 +59,45 @@ app.post('/player/update_stats', (req,res) => {
     });
 });
 
-app.post('/playerstats/insert_stats', (req, res) => {
+// Endpoint to update player stat totals
+app.post('/player/update_totals', (req,res) => {
+    const {id, totPoints, totAssists, totRebounds, totSteals, totBlocks, gamesPlayed} = req.body;
+
+    // Insert the stats into the DB
+    const sql = 'UPDATE Players SET totPoints = ?, totAssists = ?, totRebounds = ?, totSteals = ?, totBlocks = ?, gamesPlayed = ? WHERE id = ?';
+    db.run(sql, [totPoints, totAssists, totRebounds, totSteals, totBlocks, gamesPlayed, id], (err) => {
+        if (err) {
+            console.error('Error inserting stats', err.message);
+        } else {
+            res.status(201).send('Stats Uploaded');
+        }
+    });
+});
+
+//Endpoint to insert player stats from each game into the PLayerGameStats table
+app.post('/player/insert_stats', (req, res) => {
     const {playerID, gameID, points, assists, rebounds, steals, blocks} = req.body;
 
-    const sql = 'INSERT INTO PlayerStats (playerID, gameID, points, assists, rebounds, steals, blocks) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    const sql = 'INSERT INTO PlayerGameStats (playerID, gameID, points, assists, rebounds, steals, blocks) VALUES (?, ?, ?, ?, ?, ?, ?)'
     db.run(sql, [playerID, gameID, points, assists, rebounds, steals, blocks], (err) => {
         if (err) {
-            console.error(err);
+            console.error(err.message);
         } else {
             res.status(201).send('Player Stats Uploaded')
+        }
+    });
+});
+
+app.get('/player/gamestats', (req, res) => {
+    const {id} = req.query;
+    if (!id) {
+        return res.status(400).json({ error: "id is required"});
+    }
+    db.all('SELECT * FROM PlayerGameStats WHERE playerID = ?', [id], (err, rows) => {
+        if (err) {
+            res.status(500).json({"error in ID": err.message })
+        } else {
+            res.json(rows);
         }
     });
 });
