@@ -11,15 +11,9 @@ export default function PlayerList() {
     // This component displays a list of all the Hawks players and their main counting stats
     let [playerList, setPlayerList] = useState([]);
     let [idList, setidList] = useState({});
-    /**
-     * Mo Gueye - 3939
-     * David Roddy - 3483
-     * Kobe Bufkin - 3938
-     * Larry Nance - 385
-     */
     
     useEffect(() =>{
-        getStatsID(3939);
+        getStats();
         fetchPlayers(); // IMPORTANT: remember to call the function here!
     }, [])
 
@@ -50,12 +44,11 @@ export default function PlayerList() {
             'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
         }
     };
-    const fetchPlayerGameLog = async (id: number) => {
-        
+    const fetchPlayerGameLog = async (id: number) => {   
         try {
                 const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=${id}&season=2024`, statsOptions);
                 const result = await response.json();
-                
+                console.log(result.response);
                 for (let i = 0; i < result.response.length; i++) {
                     let points = result.response[i].points;
                     let assists = result.response[i].assists;
@@ -91,7 +84,7 @@ export default function PlayerList() {
         } catch (err) {
             console.error(err);
         }
-    }
+    } // fetchPlayerGameLogs
 
 
     // Uses a player's game logs that are stored in the DB to calculate their stat totals
@@ -147,9 +140,9 @@ export default function PlayerList() {
         } catch (err) {
             console.error(err);
         }
-    }
+    } // getPlayerTotals
 
-    // Uses a player's game logs that are stored in the DB to calculate their stat totals
+    // Uses a player's game logs that are stored in the DB to calculate their stat averages
     const getPlayerAverages = async (id: number) => {  
         try {
             try {
@@ -203,9 +196,50 @@ export default function PlayerList() {
         } catch (err) {
             console.error(err);
         }
-    }
+    } // getPlayerAverages
 
     
+    // Uses a game ID to pull stats from the API and puts all of the Hawks players stats into the PlayerGameStats table
+    const updateGameLog = async (gameID: number) => {
+        try {
+            const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?game=${gameID}`, statsOptions);
+            const result = await response.json();
+            console.log(result.response[1])
+            for (let i = 0; i < result.response.length; i++) {
+                console.log(result.response[i]);
+                if (result.response[i].team.nickname === "Hawks") {
+                    let points = result.response[i].points;
+                    let assists = result.response[i].assists;
+                    let rebounds = result.response[i].totReb;
+                    let steals = result.response[i].steals;
+                    let blocks = result.response[i].blocks;
+                    let playerID = result.response[i].player.id;
+                    try {
+                        const result = await fetch('http://localhost:3001/player/insert_stats', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                playerID: playerID,
+                                gameID: gameID,
+                                points: points,
+                                assists: assists,
+                                rebounds: rebounds,
+                                steals: steals,
+                                blocks: blocks,
+                            }),
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
+                } // if
+            } // for
+        } catch (err) {
+            console.error("Error updating game log: " + err);
+        }
+    } // updateGameLog
+
 
     // Fetches and returns the IDs from the database
     const fetchPlayerIDs = async () => {
@@ -218,7 +252,7 @@ export default function PlayerList() {
         } catch (error) {
             console.error(error);
         }
-    }
+    } // fetchPlayerIDs
 
     // function to retrieve the stats of all the players on the Hawks and put it into the DB
     const getStats = () => {
@@ -227,6 +261,7 @@ export default function PlayerList() {
             const idArray = ids;
             idArray?.map((id) => {
                 getPlayerTotals(id);
+                getPlayerAverages(id);
             })
         })
        .catch((err) => {
