@@ -11,14 +11,16 @@ export default function PlayerList() {
     // This component displays a list of all the Hawks players and their main counting stats
     let [playerList, setPlayerList] = useState([]);
     let [idList, setidList] = useState({});
+
+    let sort = useState("");
     
     useEffect(() =>{
         getStats();
-        fetchPlayers(); // IMPORTANT: remember to call the function here!
+        fetchPlayers("none"); // IMPORTANT: remember to call the function here!
     }, [])
 
     // Gets the player information from the DB
-    const fetchPlayers = async () => {
+    const fetchPlayers = async (sort: string) => {
         try {
             const response = await fetch(`http://localhost:3001/players`,);
             if (!response.ok) {
@@ -27,7 +29,17 @@ export default function PlayerList() {
             }
             const playerData = await response.json();
             setPlayerList(playerData);
-            playerData.sort((a: {ppg: number}, b: {ppg: number}) => b.ppg - a.ppg)
+            if (sort === "ppg") {
+                playerData.sort((a: {ppg: number}, b: {ppg: number}) => b.ppg - a.ppg)
+            } else if (sort ==="apg") {
+                playerData.sort((a: {apg: number}, b: {apg: number}) => b.apg - a.apg)
+            } else if (sort ==="rpg") {
+                playerData.sort((a: {rpg: number}, b: {rpg: number}) => b.rpg - a.rpg)
+            } else if (sort ==="spg") {
+                playerData.sort((a: {spg: number}, b: {spg: number}) => b.spg - a.spg)
+            } else if (sort ==="rpg") {
+                playerData.sort((a: {rpg: number}, b: {rpg: number}) => b.rpg - a.rpg)
+            } 
             
         } catch (err) {
             console.log('Error in fetching player data: ', err);
@@ -281,11 +293,11 @@ export default function PlayerList() {
             <div className={styles.listTop}>
                 <p>Name</p>
                 <p>Position</p>
-                <p>Points</p>
-                <p>Assists</p>
-                <p>Rebounds</p>
-                <p>Steals</p>
-                <p>Blocks</p>
+                <button className={styles.link} onClick={() => fetchPlayers("ppg")} >Points</button>
+                <button className={styles.link} onClick={() => fetchPlayers("apg")} >Assists</button>
+                <button className={styles.link} onClick={() => fetchPlayers("rpg")} >Rebounds</button>
+                <button className={styles.link} onClick={() => fetchPlayers("spg")} >Steals</button>
+                <button className={styles.link} onClick={() => fetchPlayers("bpg")} >Blocks</button>
             </div>
             {playerList.map((player, index) => (
                 <PlayerCard 
