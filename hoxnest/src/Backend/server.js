@@ -147,6 +147,10 @@ app.post('/games/update_games', (req,res) => {
     });
 });
 
+
+
+
+
 // STANDINGS ENDPOINTS
 // Endpoint to retrieve standings
 app.get('/standings', (req,res) => {
@@ -168,6 +172,21 @@ app.post('/standings/insert_standings', (req,res) => {
     db.run(sql, [team, wins, losses, logo], (err) => {
         if (err) {
             console.error('Error inserting standings', err.message);
+        } else {
+            res.status(201).send('Standings Uploaded');
+        }
+    });
+});
+
+// Endpoint to insert eastern conference standings
+app.post('/standings/update_standings', (req,res) => {
+    const {wins, losses, team} = req.body;
+
+    // Insert the standings into the DB
+    const sql = 'UPDATE Standings SET wins = ?, losses = ? WHERE team = ?';
+    db.run(sql, [wins, losses, team], (err) => {
+        if (err) {
+            console.error('Error updating standings', err.message);
         } else {
             res.status(201).send('Standings Uploaded');
         }

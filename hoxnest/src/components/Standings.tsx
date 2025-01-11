@@ -11,7 +11,7 @@ export default function Standings() {
 
 
     useEffect(() => {
-        getStandingsAPI();
+        updateStandings();
         fetchStandings();
     }, [])
 
@@ -38,6 +38,40 @@ export default function Standings() {
             'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
         }
     };
+
+    const updateStandings = async () => {
+        try {
+            const response = await fetch('https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2024&conference=east', options);
+            const result = await response.json();
+            console.log(result.response[0]);
+            for (let i = 0; i < result.response.length; i++) {
+
+                let team = result.response[i].team.nickname;
+                let wins = result.response[i].win.total;
+                let losses = result.response[i].loss.total;
+
+                try {
+                    const send = await fetch('http://localhost:3001/standings/update_standings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type' : 'application/json',
+                        },
+                        body: JSON.stringify({
+                            wins: wins,
+                            losses: losses,
+                            team: team,
+                        })
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+       
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     const getStandingsAPI = async () => {
         try {
             const response = await fetch('https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2024&conference=east', options);
