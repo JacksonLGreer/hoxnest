@@ -11,7 +11,8 @@ export default function GameList() {
     let [gameList, setGameList] = useState([]);
 
     useEffect(() => {
-        fetchGameByID(14620);
+        fetchAllGamesAPI();
+        //fetchGameByID(14620);
         getGames();
     }, [])
 
@@ -35,6 +36,7 @@ export default function GameList() {
                 let oppScore;
                 let location;
                 let date;
+                let time;
                 let gameId;
 
                 // Determine if Hawks were home or away and sets opponent
@@ -43,17 +45,19 @@ export default function GameList() {
                     hawksScore = result.response[i].scores.home.points;
                     oppScore = result.response[i].scores.visitors.points;
                     location = result.response[i].arena.city;
-                    date = result.response[i].date.start;
+                    date = result.response[i].date.start.substring(0, 10);
+                    time = result.response[i].date.start.substring(11, 19);
                     gameId = result.response[i].id;
                 } else {
                     opponent = result.response[i].teams.home.nickname;
                     hawksScore = result.response[i].scores.visitors.points;
                     oppScore = result.response[i].scores.home.points;
                     location = result.response[i].arena.city;
-                    date = result.response[i].date.start;
+                    date = result.response[i].date.start.substring(0, 10);
+                    time = result.response[i].date.start.substring(11, 19);
                     gameId = result.response[i].id;
                 }
-                console.log(opponent, hawksScore, oppScore, location, date, gameId);
+                console.log(opponent, hawksScore, oppScore, location, date, time, gameId);
                 try {
                     const send = await fetch('http://localhost:3001/games/insert_games', {
                         method: 'POST',
@@ -66,6 +70,7 @@ export default function GameList() {
                             oppScore: oppScore,
                             location: location,
                             date: date,
+                            time: time,
                             gameId: gameId,
                         })
                     });

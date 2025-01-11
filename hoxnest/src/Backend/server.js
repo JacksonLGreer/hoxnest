@@ -118,11 +118,11 @@ app.get('/games', (req,res) => {
 
 // Endpoint to insert Hawks games
 app.post('/games/insert_games', (req,res) => {
-    const {opponent, location, hawksScore, oppScore, date, gameId} = req.body;
+    const {opponent, location, hawksScore, oppScore, date, time, gameId} = req.body;
 
     // Insert the games into the DB
-    const sql = 'INSERT INTO Games (opponent, location, hawksScore, oppScore, date, gameId) VALUES (?, ?, ?, ?, ?, ?)';
-    db.run(sql, [opponent, location, hawksScore, oppScore, date, gameId], (err) => {
+    const sql = 'INSERT INTO Games (opponent, location, hawksScore, oppScore, date, time, gameId) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.run(sql, [opponent, location, hawksScore, oppScore, date, time, gameId], (err) => {
         if (err) {
             console.error('Error inserting games', err.message);
         } else {
