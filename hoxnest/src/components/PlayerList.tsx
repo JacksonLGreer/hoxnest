@@ -7,19 +7,32 @@ import styles from "./PlayerList.module.css";
 
 export default function PlayerList() {
 
+    /**
+     * This component displays a list of all the Hawks players and their main counting stats.
+     * Methods:
+     * fetchPlayers(string) - Gets the player information from the DB.
+     * fetchPlayerGameLog(id: number) - Gets a player's entire game log from the API and puts into DB.
+     * getPlayerTotals(id: number) - Calculates a player's totals using game logs from DB.
+     * getPlayerAverages(playerID: number) - Calculates a player's averages using game logs from DB.
+     * updateGameLog(gameID: number) - Uses a game ID to pull stats from the API and puts all of the Hawks players stats into the DB.
+     * fetchPlayerIDs - fetches and returns a list of playerIDs from the DB.
+     * getStats - uses a few of the above methods to perform all calculations together.
+    */
     
-    // This component displays a list of all the Hawks players and their main counting stats
+
     let [playerList, setPlayerList] = useState([]);
     let [idList, setidList] = useState({});
 
-    let sort = useState("");
     
     useEffect(() =>{
         getStats();
         fetchPlayers("none"); // IMPORTANT: remember to call the function here!
     }, [])
 
-    // Gets the player information from the DB
+    /**
+     * Gets the player information from the DB
+     * @param - string "sort" - A keyword that can be passed to sort the data by ppg, apg, etc. Use "none" for no sort.
+     */
     const fetchPlayers = async (sort: string) => {
         try {
             const response = await fetch(`http://localhost:3001/players`,);
@@ -266,7 +279,7 @@ export default function PlayerList() {
         }
     } // fetchPlayerIDs
 
-    // function to retrieve the stats of all the players on the Hawks and put it into the DB
+    // calls the getPlayerTotals and getPlayerAverages methods for all Hawks players
     const getStats = () => {
         const ids = fetchPlayerIDs()
         .then((ids) => {
@@ -281,11 +294,6 @@ export default function PlayerList() {
        })
     }
 
-    const getStatsID = async (id: number) => {
-        fetchPlayerGameLog(id);
-        getPlayerAverages(id);
-        getPlayerTotals(id);
-    }
     
 
     return (
