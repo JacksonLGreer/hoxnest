@@ -6,3 +6,11 @@
     border-bottom: 1px solid #FDB927;
     text-align: center;
 }
+
+.win {
+    color: green;
+}
+
+.loss {
+    color: red;
+}

@@ -57,7 +57,7 @@ export default function GameList() {
                     time = result.response[i].date.start.substring(11, 19);
                     gameId = result.response[i].id;
                 }
-                console.log(opponent, hawksScore, oppScore, location, date, time, gameId);
+                //console.log(opponent, hawksScore, oppScore, location, date, time, gameId);
                 try {
                     const send = await fetch('http://localhost:3001/games/insert_games', {
                         method: 'POST',
@@ -93,7 +93,8 @@ export default function GameList() {
             }
             const gameData = await response.json();
             setGameList(gameData);
-            
+            gameData.sort((a: {date: number}, b: {date: number}) => new Date(a.date).getTime() - new Date(b.date).getTime() );
+
         } catch (err) {
             console.log('Error in fetching game data: ', err);
         }
@@ -117,7 +118,7 @@ export default function GameList() {
                 oppScore = result.response[0].scores.home.points;
                 gameId = result.response[0].id;
             }
-            console.log(hawksScore, oppScore, gameId);
+            //console.log(hawksScore, oppScore, gameId);
             try {
                 const send = await fetch('http://localhost:3001/games/update_games', {
                     method: 'POST',
@@ -140,11 +141,10 @@ export default function GameList() {
     } // fetchGameByID
 
     return (
-        <div>
+        <div className={styles.box}>
             <div className={styles.listTop}>
                 <p>Home</p>
-                <p>Home Score</p>
-                <p>Visitor Score</p>
+                <p>Score</p>
                 <p>Visitor</p>
                 <p>Location</p>
                 <p>Date</p>

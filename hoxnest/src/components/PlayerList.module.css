@@ -6,3 +6,11 @@
     border-bottom: 2px solid #FDB927;
     text-align: center;
 }
+
+.box {
+    border: double 2px #FDB927;
+    border-radius: 5px;
+    padding: 10px;
+    height: 750px;
+    overflow-y: auto;
+}

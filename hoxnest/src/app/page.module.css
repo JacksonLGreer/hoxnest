@@ -1,4 +1,6 @@
 .home{
     display: grid;
     grid-template-columns: 3fr 3fr 3fr;
+    padding:10px;
+    gap: 10px;
 }

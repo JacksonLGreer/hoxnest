@@ -73,7 +73,6 @@ export default function PlayerList() {
         try {
                 const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=${id}&season=2024`, statsOptions);
                 const result = await response.json();
-                console.log(result.response);
                 for (let i = 0; i < result.response.length; i++) {
                     let points = result.response[i].points;
                     let assists = result.response[i].assists;
@@ -137,7 +136,6 @@ export default function PlayerList() {
                     totBlocks = totBlocks + playerData[i].blocks;
 
                 }
-                console.log(totPoints);
                 // Update fields in DB with stats
                 try {
                     const result = await fetch('http://localhost:3001/player/update_totals', {
@@ -195,7 +193,6 @@ export default function PlayerList() {
                 const rpg = (totRebounds / gamesPlayed).toFixed(1);
                 const spg = (totSteals / gamesPlayed).toFixed(1);
                 const bpg = (totBlocks / gamesPlayed).toFixed(1);
-                console.log(ppg, apg, rpg, spg, bpg);
                 // Update fields in DB with stats
                 try {
                     const result = await fetch('http://localhost:3001/player/update_averages', {
@@ -229,9 +226,7 @@ export default function PlayerList() {
         try {
             const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?game=${gameID}`, statsOptions);
             const result = await response.json();
-            console.log(result.response[1])
             for (let i = 0; i < result.response.length; i++) {
-                console.log(result.response[i]);
                 if (result.response[i].team.nickname === "Hawks") {
                     let points = result.response[i].points;
                     let assists = result.response[i].assists;
@@ -297,7 +292,7 @@ export default function PlayerList() {
     
 
     return (
-        <div>
+        <div className={styles.box}>
             <div className={styles.listTop}>
                 <p>Name</p>
                 <p>Position</p>

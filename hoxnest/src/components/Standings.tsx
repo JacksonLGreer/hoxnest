@@ -43,7 +43,6 @@ export default function Standings() {
         try {
             const response = await fetch('https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2024&conference=east', options);
             const result = await response.json();
-            console.log(result.response[0]);
             for (let i = 0; i < result.response.length; i++) {
 
                 let team = result.response[i].team.nickname;
@@ -76,7 +75,6 @@ export default function Standings() {
         try {
             const response = await fetch('https://api-nba-v1.p.rapidapi.com/standings?league=standard&season=2024&conference=east', options);
             const result = await response.json();
-            console.log(result.response[0]);
             for (let i = 0; i < result.response.length; i++) {
 
                 let team = result.response[i].team.nickname;
@@ -108,7 +106,7 @@ export default function Standings() {
     }
 
     return (
-        <div>
+        <div className={styles.box}>
             <div className={styles.listTop}>
                 <p>Team</p>
                 <p>Wins</p>
