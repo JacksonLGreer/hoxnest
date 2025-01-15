@@ -118,11 +118,11 @@ app.get('/games', (req,res) => {
 
 // Endpoint to insert Hawks games
 app.post('/games/insert_games', (req,res) => {
-    const {opponent, location, hawksScore, oppScore, date, gameId} = req.body;
+    const {opponent, location, hawksScore, oppScore, date, time, gameId} = req.body;
 
     // Insert the games into the DB
-    const sql = 'INSERT INTO Games (opponent, location, hawksScore, oppScore, date, gameId) VALUES (?, ?, ?, ?, ?, ?)';
-    db.run(sql, [opponent, location, hawksScore, oppScore, date, gameId], (err) => {
+    const sql = 'INSERT INTO Games (opponent, location, hawksScore, oppScore, date, time, gameId) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.run(sql, [opponent, location, hawksScore, oppScore, date, time, gameId], (err) => {
         if (err) {
             console.error('Error inserting games', err.message);
         } else {
@@ -130,6 +130,26 @@ app.post('/games/insert_games', (req,res) => {
         }
     });
 });
+
+// Endpoint to update games
+app.post('/games/update_games', (req,res) => {
+    const {hawksScore, oppScore, gameId} = req.body;
+    console.log(req.body)
+    // Insert the stats into the DB
+    const sql = 'UPDATE Games SET hawksScore = ?, oppScore = ? WHERE gameId = ?';
+    db.run(sql, [hawksScore, oppScore, gameId], (err) => {
+        if (err) {
+            console.error('Error inserting stats', err.message);
+        } else {
+            res.status(201).send('Stats Uploaded');
+            console.log("shoulda worked")
+        }
+    });
+});
+
+
+
+
 
 // STANDINGS ENDPOINTS
 // Endpoint to retrieve standings
@@ -152,6 +172,21 @@ app.post('/standings/insert_standings', (req,res) => {
     db.run(sql, [team, wins, losses, logo], (err) => {
         if (err) {
             console.error('Error inserting standings', err.message);
+        } else {
+            res.status(201).send('Standings Uploaded');
+        }
+    });
+});
+
+// Endpoint to insert eastern conference standings
+app.post('/standings/update_standings', (req,res) => {
+    const {wins, losses, team} = req.body;
+
+    // Insert the standings into the DB
+    const sql = 'UPDATE Standings SET wins = ?, losses = ? WHERE team = ?';
+    db.run(sql, [wins, losses, team], (err) => {
+        if (err) {
+            console.error('Error updating standings', err.message);
         } else {
             res.status(201).send('Standings Uploaded');
         }

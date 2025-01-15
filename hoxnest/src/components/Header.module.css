@@ -1,11 +1,31 @@
 .headerDiv {
     box-sizing: border-box;
     width: 100%;
+    height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: baseline;
-    padding: 1em;
+    padding-left: 0;
     margin-bottom: 2em;
-    background-color: #FDB927;
-    color: black;
+    background-color: #C8102E;
+}
+
+.corner {
+    background-color: black;
+    color: #FDB927;
+    width: auto;
+    padding-left: 2em;
+    padding-right: 2em;
+    height: 100%;
+    font-size: 38px;
+}
+
+.button {
+    margin-left: auto;
+    color:#FDB927;
+    padding-left: 1em;
+    padding-right: 1em;
+    background-color: black;
+    height: 100%;
+    font-size: 24px;
 }

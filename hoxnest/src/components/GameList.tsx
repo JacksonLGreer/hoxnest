@@ -5,12 +5,14 @@ import { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard"
 import styles from "./GameList.module.css";
 import GameCard from "./GameCard";
+import hawksLogo from './hawksLogo.svg';
 
 export default function GameList() {
 
     let [gameList, setGameList] = useState([]);
 
     useEffect(() => {
+        //fetchGameByID(14620);
         getGames();
     }, [])
 
@@ -23,7 +25,6 @@ export default function GameList() {
             'x-rapidapi-host': 'api-nba-v1.p.rapidapi.com'
         }
     };
-
     const fetchAllGamesAPI = async () => {
         try {
             const response = await fetch(`https://api-nba-v1.p.rapidapi.com/games?season=2024&team=1`, options);
@@ -35,6 +36,7 @@ export default function GameList() {
                 let oppScore;
                 let location;
                 let date;
+                let time;
                 let gameId;
 
                 // Determine if Hawks were home or away and sets opponent
@@ -43,17 +45,19 @@ export default function GameList() {
                     hawksScore = result.response[i].scores.home.points;
                     oppScore = result.response[i].scores.visitors.points;
                     location = result.response[i].arena.city;
-                    date = result.response[i].date.start;
+                    date = result.response[i].date.start.substring(0, 10);
+                    time = result.response[i].date.start.substring(11, 19);
                     gameId = result.response[i].id;
                 } else {
                     opponent = result.response[i].teams.home.nickname;
                     hawksScore = result.response[i].scores.visitors.points;
                     oppScore = result.response[i].scores.home.points;
                     location = result.response[i].arena.city;
-                    date = result.response[i].date.start;
+                    date = result.response[i].date.start.substring(0, 10);
+                    time = result.response[i].date.start.substring(11, 19);
                     gameId = result.response[i].id;
                 }
-                console.log(opponent, hawksScore, oppScore, location, date, gameId);
+                //console.log(opponent, hawksScore, oppScore, location, date, time, gameId);
                 try {
                     const send = await fetch('http://localhost:3001/games/insert_games', {
                         method: 'POST',
@@ -66,6 +70,7 @@ export default function GameList() {
                             oppScore: oppScore,
                             location: location,
                             date: date,
+                            time: time,
                             gameId: gameId,
                         })
                     });
@@ -78,6 +83,7 @@ export default function GameList() {
         }
     }
 
+    // Retrieves the list of games from the DB to display the schedule and scores from played games
     const getGames = async () => {
         try {
             const response = await fetch('http://localhost:3001/games',);
@@ -87,18 +93,58 @@ export default function GameList() {
             }
             const gameData = await response.json();
             setGameList(gameData);
-            
+            gameData.sort((a: {date: number}, b: {date: number}) => new Date(a.date).getTime() - new Date(b.date).getTime() );
+
         } catch (err) {
             console.log('Error in fetching game data: ', err);
         }
     }
 
+    // Pulls all of the Hawks games from 2024-25 from the API and puts them into the DB
+    const fetchGameByID = async (gameID: number) => {
+        try {
+            const response = await fetch(`https://api-nba-v1.p.rapidapi.com/games?id=${gameID}`, options);
+            const result = await response.json();
+            let hawksScore;
+            let oppScore;
+            let gameId;
+            // Determine if Hawks were home or away and sets opponent
+            if (result.response[0].teams.home.nickname === "Hawks") {
+                hawksScore = result.response[0].scores.home.points;
+                oppScore = result.response[0].scores.visitors.points;
+                gameId = result.response[0].id;
+            } else {
+                hawksScore = result.response[0].scores.visitors.points;
+                oppScore = result.response[0].scores.home.points;
+                gameId = result.response[0].id;
+            }
+            //console.log(hawksScore, oppScore, gameId);
+            try {
+                const send = await fetch('http://localhost:3001/games/update_games', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type' : 'application/json',
+                    },
+                    body: JSON.stringify({
+                        hawksScore: hawksScore,
+                        oppScore: oppScore,
+                        gameId: gameId,
+                    })
+                });
+                console.log("sent")
+            } catch (err) {
+                console.error(err);
+            }
+        } catch (err) {
+            console.log("Error adding game score: " + err);
+        }
+    } // fetchGameByID
+
     return (
-        <div>
+        <div className={styles.box}>
             <div className={styles.listTop}>
                 <p>Home</p>
-                <p>Home Score</p>
-                <p>Visitor Score</p>
+                <p>Score</p>
                 <p>Visitor</p>
                 <p>Location</p>
                 <p>Date</p>
