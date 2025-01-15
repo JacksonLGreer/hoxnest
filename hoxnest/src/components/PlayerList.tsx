@@ -7,18 +7,33 @@ import styles from "./PlayerList.module.css";
 
 export default function PlayerList() {
 
+    /**
+     * This component displays a list of all the Hawks players and their main counting stats.
+     * Methods:
+     * fetchPlayers(string) - Gets the player information from the DB.
+     * fetchPlayerGameLog(id: number) - Gets a player's entire game log from the API and puts into DB.
+     * getPlayerTotals(id: number) - Calculates a player's totals using game logs from DB.
+     * getPlayerAverages(playerID: number) - Calculates a player's averages using game logs from DB.
+     * updateGameLog(gameID: number) - Uses a game ID to pull stats from the API and puts all of the Hawks players stats into the DB.
+     * fetchPlayerIDs - fetches and returns a list of playerIDs from the DB.
+     * getStats - uses a few of the above methods to perform all calculations together.
+    */
     
-    // This component displays a list of all the Hawks players and their main counting stats
+
     let [playerList, setPlayerList] = useState([]);
     let [idList, setidList] = useState({});
+
     
     useEffect(() =>{
         getStats();
-        fetchPlayers(); // IMPORTANT: remember to call the function here!
+        fetchPlayers("none"); // IMPORTANT: remember to call the function here!
     }, [])
 
-    // Gets the player information from the DB
-    const fetchPlayers = async () => {
+    /**
+     * Gets the player information from the DB
+     * @param - string "sort" - A keyword that can be passed to sort the data by ppg, apg, etc. Use "none" for no sort.
+     */
+    const fetchPlayers = async (sort: string) => {
         try {
             const response = await fetch(`http://localhost:3001/players`,);
             if (!response.ok) {
@@ -27,7 +42,17 @@ export default function PlayerList() {
             }
             const playerData = await response.json();
             setPlayerList(playerData);
-            playerData.sort((a: {ppg: number}, b: {ppg: number}) => b.ppg - a.ppg)
+            if (sort === "ppg") {
+                playerData.sort((a: {ppg: number}, b: {ppg: number}) => b.ppg - a.ppg)
+            } else if (sort ==="apg") {
+                playerData.sort((a: {apg: number}, b: {apg: number}) => b.apg - a.apg)
+            } else if (sort ==="rpg") {
+                playerData.sort((a: {rpg: number}, b: {rpg: number}) => b.rpg - a.rpg)
+            } else if (sort ==="spg") {
+                playerData.sort((a: {spg: number}, b: {spg: number}) => b.spg - a.spg)
+            } else if (sort ==="bpg") {
+                playerData.sort((a: {bpg: number}, b: {bpg: number}) => b.bpg - a.bpg)
+            } 
             
         } catch (err) {
             console.log('Error in fetching player data: ', err);
@@ -48,7 +73,6 @@ export default function PlayerList() {
         try {
                 const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?id=${id}&season=2024`, statsOptions);
                 const result = await response.json();
-                console.log(result.response);
                 for (let i = 0; i < result.response.length; i++) {
                     let points = result.response[i].points;
                     let assists = result.response[i].assists;
@@ -112,7 +136,6 @@ export default function PlayerList() {
                     totBlocks = totBlocks + playerData[i].blocks;
 
                 }
-                console.log(totPoints);
                 // Update fields in DB with stats
                 try {
                     const result = await fetch('http://localhost:3001/player/update_totals', {
@@ -170,7 +193,6 @@ export default function PlayerList() {
                 const rpg = (totRebounds / gamesPlayed).toFixed(1);
                 const spg = (totSteals / gamesPlayed).toFixed(1);
                 const bpg = (totBlocks / gamesPlayed).toFixed(1);
-                console.log(ppg, apg, rpg, spg, bpg);
                 // Update fields in DB with stats
                 try {
                     const result = await fetch('http://localhost:3001/player/update_averages', {
@@ -204,9 +226,7 @@ export default function PlayerList() {
         try {
             const response = await fetch(`https://api-nba-v1.p.rapidapi.com/players/statistics?game=${gameID}`, statsOptions);
             const result = await response.json();
-            console.log(result.response[1])
             for (let i = 0; i < result.response.length; i++) {
-                console.log(result.response[i]);
                 if (result.response[i].team.nickname === "Hawks") {
                     let points = result.response[i].points;
                     let assists = result.response[i].assists;
@@ -254,7 +274,7 @@ export default function PlayerList() {
         }
     } // fetchPlayerIDs
 
-    // function to retrieve the stats of all the players on the Hawks and put it into the DB
+    // calls the getPlayerTotals and getPlayerAverages methods for all Hawks players
     const getStats = () => {
         const ids = fetchPlayerIDs()
         .then((ids) => {
@@ -269,23 +289,18 @@ export default function PlayerList() {
        })
     }
 
-    const getStatsID = async (id: number) => {
-        fetchPlayerGameLog(id);
-        getPlayerAverages(id);
-        getPlayerTotals(id);
-    }
     
 
     return (
-        <div>
+        <div className={styles.box}>
             <div className={styles.listTop}>
                 <p>Name</p>
                 <p>Position</p>
-                <p>Points</p>
-                <p>Assists</p>
-                <p>Rebounds</p>
-                <p>Steals</p>
-                <p>Blocks</p>
+                <button className={styles.link} onClick={() => fetchPlayers("ppg")} >Points</button>
+                <button className={styles.link} onClick={() => fetchPlayers("apg")} >Assists</button>
+                <button className={styles.link} onClick={() => fetchPlayers("rpg")} >Rebounds</button>
+                <button className={styles.link} onClick={() => fetchPlayers("spg")} >Steals</button>
+                <button className={styles.link} onClick={() => fetchPlayers("bpg")} >Blocks</button>
             </div>
             {playerList.map((player, index) => (
                 <PlayerCard 
