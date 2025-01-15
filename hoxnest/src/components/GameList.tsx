@@ -5,13 +5,13 @@ import { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard"
 import styles from "./GameList.module.css";
 import GameCard from "./GameCard";
+import hawksLogo from './hawksLogo.svg';
 
 export default function GameList() {
 
     let [gameList, setGameList] = useState([]);
 
     useEffect(() => {
-        fetchAllGamesAPI();
         //fetchGameByID(14620);
         getGames();
     }, [])

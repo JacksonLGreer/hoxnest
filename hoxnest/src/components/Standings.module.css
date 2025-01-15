@@ -1,17 +1,20 @@
 .listTop {
     display: grid;
-    grid-template-columns: 3fr 3fr 3fr;
+    grid-template-columns: 6fr 3fr 3fr;
     font-weight: bold;
-    padding: 10px 0;
-    border-bottom: 2px solid #FDB927;
+    padding: 5px 0;
+    border-bottom: 2px solid #C8102E;
     text-align: center;
     border-style: double;
 }
 
 .box {
-    border: double 2px #FDB927;
-    border-radius: 5px;
+    border: double 2px #C8102E;
+    border-radius: 10px;
     padding: 10px;
-    height: 750px;
+    height: 650px;
     overflow-y: auto;
+    font-size: 12px;
+    color: #FDB927;
+    background-color: black;
 }
