@@ -77,9 +77,24 @@ export default function PlayerList() {
                     let points = result.response[i].points;
                     let assists = result.response[i].assists;
                     let rebounds = result.response[i].totReb;
+                    let mins = result.response[i].min;
+                    let offReb = result.response[i].offReb;
+                    let defReb = result.response[i].defReb;
                     let steals = result.response[i].steals;
                     let blocks = result.response[i].blocks;
                     let gameID = result.response[i].game.id;
+                    let fgm = result.response[i].fgm;
+                    let fga = result.response[i].fga;
+                    let fgp = result.response[i].fgp;
+                    let ftm = result.response[i].ftm;
+                    let fta = result.response[i].fta;
+                    let ftp = result.response[i].ftp;
+                    let tpm = result.response[i].tpm;
+                    let tpa = result.response[i].tpa;
+                    let tpp = result.response[i].tpp;
+                    let fouls = result.response[i].pFouls;
+                    let turnovers = result.response[i].turnovers;
+                    let plusMinus = result.response[i].plusMinus;
                     if (gameID != 14060 && gameID != 14067 && gameID != 14087 && gameID != 14104) { //ignore preseason games
                         try {
                             const result = await fetch('http://localhost:3001/player/insert_stats', {
@@ -90,11 +105,26 @@ export default function PlayerList() {
                                 body: JSON.stringify({
                                     playerID: id,
                                     gameID: gameID,
+                                    mins: mins,
                                     points: points,
                                     assists: assists,
                                     rebounds: rebounds,
+                                    offReb: offReb,
+                                    defReb: defReb,
                                     steals: steals,
                                     blocks: blocks,
+                                    fgm: fgm,
+                                    fga: fga,
+                                    fgp: fgp,
+                                    ftm: ftm,
+                                    fta: fta,
+                                    ftp: ftp,
+                                    tpm: tpm,
+                                    tpa: tpa,
+                                    tpp: tpp,
+                                    fouls: fouls,
+                                    turnovers: turnovers,
+                                    plusMinus: plusMinus,
                                 }),
                             });
                         } catch (err) {
@@ -126,6 +156,17 @@ export default function PlayerList() {
                 let totRebounds = 0;
                 let totSteals = 0;
                 let totBlocks = 0;
+                let totMins = 0;
+                let totOffReb = 0;
+                let totDefReb = 0;
+                let fgm = 0;
+                let fga = 0;
+                let ftm = 0;
+                let fta = 0;
+                let tpm = 0;
+                let tpa = 0;
+                let totFouls = 0;
+                let totTOs = 0;
                 let gamesPlayed = playerData.length;
                 // Adding up stats
                 for (let i = 0; i < gamesPlayed; i++) {
@@ -134,6 +175,17 @@ export default function PlayerList() {
                     totRebounds = totRebounds + playerData[i].rebounds;
                     totSteals = totSteals + playerData[i].steals;
                     totBlocks = totBlocks + playerData[i].blocks;
+                    totMins = totMins + playerData[i].mins;
+                    totOffReb = totOffReb + playerData[i].offReb;
+                    totDefReb = totDefReb + playerData[i].defReb;
+                    fgm = fgm + playerData[i].fgm;
+                    fga = fga + playerData[i].fga;
+                    ftm = ftm + playerData[i].ftm;
+                    fta = fta + playerData[i].fta;
+                    tpm = tpm + playerData[i].tpm;
+                    tpa = tpa + playerData[i].tpa;
+                    totFouls = totFouls + playerData[i].fouls;
+                    totTOs = totTOs + playerData[i].turnovers;
 
                 }
                 // Update fields in DB with stats
@@ -150,6 +202,17 @@ export default function PlayerList() {
                             totRebounds: totRebounds,
                             totSteals: totSteals,
                             totBlocks: totBlocks,
+                            totOffReb: totOffReb,
+                            totDefReb: totDefReb,
+                            fgm: fgm,
+                            fga: fga,
+                            ftm: ftm,
+                            fta: fta,
+                            tpm: tpm,
+                            tpa: tpa,
+                            totFouls: totFouls,
+                            totTOs: totTOs,
+                            totMins: totMins,
                             gamesPlayed: gamesPlayed,
                         }),
                     });
@@ -180,6 +243,18 @@ export default function PlayerList() {
                 let totRebounds = 0;
                 let totSteals = 0;
                 let totBlocks = 0;
+                let totMins = 0;
+                let totOffReb = 0;
+                let totDefReb = 0;
+                let fgm = 0;
+                let fga = 0;
+                let ftm = 0;
+                let fta = 0;
+                let tpm = 0;
+                let tpa = 0;
+                let totFouls = 0;
+                let totTOs = 0;
+                
                 let gamesPlayed = playerData.length;
                 for (let i = 0; i < gamesPlayed; i++) {
                     totPoints = totPoints + playerData[i].points;
@@ -187,12 +262,38 @@ export default function PlayerList() {
                     totRebounds = totRebounds + playerData[i].rebounds;
                     totSteals = totSteals + playerData[i].steals;
                     totBlocks = totBlocks + playerData[i].blocks;
+                    totMins = totMins + playerData[i].mins;
+                    totOffReb = totOffReb + playerData[i].offReb;
+                    totDefReb = totDefReb + playerData[i].defReb;
+                    fgm = fgm + playerData[i].fgm;
+                    fga = fga + playerData[i].fga;
+                    ftm = ftm + playerData[i].ftm;
+                    fta = fta + playerData[i].fta;
+                    tpm = tpm + playerData[i].tpm;
+                    tpa = tpa + playerData[i].tpa;
+                    totFouls = totFouls + playerData[i].fouls;
+                    totTOs = totTOs + playerData[i].turnovers;
+
                 }
                 const ppg = (totPoints / gamesPlayed).toFixed(1);
                 const apg = (totAssists / gamesPlayed).toFixed(1);
                 const rpg = (totRebounds / gamesPlayed).toFixed(1);
+                const offrpg = (totOffReb / gamesPlayed).toFixed(1);
+                const defrpg = (totDefReb / gamesPlayed).toFixed(1);
                 const spg = (totSteals / gamesPlayed).toFixed(1);
                 const bpg = (totBlocks / gamesPlayed).toFixed(1);
+                const mpg = (totMins / gamesPlayed).toFixed(1);
+                const fgmA = (fgm / gamesPlayed).toFixed(1);
+                const fgaA = (fga / gamesPlayed).toFixed(1);
+                const fgp = ((fgm / fga) * 100).toFixed(1);
+                const ftmA = (ftm / gamesPlayed).toFixed(1);
+                const ftaA = (fta / gamesPlayed).toFixed(1);
+                const ftp = ((ftm / fta) * 100).toFixed(1);
+                const tpmA = (tpm / gamesPlayed).toFixed(1);
+                const tpaA = (tpa / gamesPlayed).toFixed(1);
+                const tpp = ((tpm / tpa) * 100).toFixed(1);
+                const foulspg = (totFouls / gamesPlayed).toFixed(1);
+                const topg = (totTOs / gamesPlayed).toFixed(1);
                 // Update fields in DB with stats
                 try {
                     const result = await fetch('http://localhost:3001/player/update_averages', {
@@ -205,8 +306,22 @@ export default function PlayerList() {
                             ppg: ppg,
                             apg: apg,
                             rpg: rpg,
+                            offrpg: offrpg,
+                            defrpg: defrpg,
                             spg: spg,
                             bpg: bpg,
+                            mpg: mpg,
+                            fgmA: fgmA,
+                            fgaA: fgaA,
+                            fgp: fgp,
+                            ftmA: ftmA,
+                            ftaA: ftaA,
+                            ftp: ftp,
+                            tpmA: tpmA,
+                            tpaA: tpaA,
+                            tpp: tpp,
+                            foulspg: foulspg,
+                            topg: topg,
                         }),
                     });
                 } catch (err) {
@@ -228,12 +343,28 @@ export default function PlayerList() {
             const result = await response.json();
             for (let i = 0; i < result.response.length; i++) {
                 if (result.response[i].team.nickname === "Hawks") {
+                    let id = result.response[i].player.id;
                     let points = result.response[i].points;
                     let assists = result.response[i].assists;
                     let rebounds = result.response[i].totReb;
+                    let mins = result.response[i].min;
+                    let offReb = result.response[i].offReb;
+                    let defReb = result.response[i].defReb;
                     let steals = result.response[i].steals;
                     let blocks = result.response[i].blocks;
-                    let playerID = result.response[i].player.id;
+                    let gameID = result.response[i].game.id;
+                    let fgm = result.response[i].fgm;
+                    let fga = result.response[i].fga;
+                    let fgp = result.response[i].fgp;
+                    let ftm = result.response[i].ftm;
+                    let fta = result.response[i].fta;
+                    let ftp = result.response[i].ftp;
+                    let tpm = result.response[i].tpm;
+                    let tpa = result.response[i].tpa;
+                    let tpp = result.response[i].tpp;
+                    let fouls = result.response[i].pFouls;
+                    let turnovers = result.response[i].turnovers;
+                    let plusMinus = result.response[i].plusMinus;
                     try {
                         const result = await fetch('http://localhost:3001/player/insert_stats', {
                             method: 'POST',
@@ -241,13 +372,27 @@ export default function PlayerList() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                playerID: playerID,
+                                playerID: id,
                                 gameID: gameID,
+                                mins: mins,
                                 points: points,
                                 assists: assists,
                                 rebounds: rebounds,
+                                offReb: offReb,
+                                defReb: defReb,
                                 steals: steals,
                                 blocks: blocks,
+                                fgm: fgm,
+                                fga: fga,
+                                fgp: fgp,
+                                ftm: ftm,
+                                fta: fta,
+                                ftp: ftp,
+                                tpm: tpm,
+                                tpa: tpa,                                    tpp: tpp,
+                                fouls: fouls,
+                                turnovers: turnovers,
+                                plusMinus: plusMinus,
                             }),
                         });
                     } catch (err) {

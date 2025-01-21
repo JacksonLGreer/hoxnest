@@ -1,0 +1,8 @@
+.playerStyle {
+    display: grid;
+    grid-template-columns: 6fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr 3fr;
+    align-items: center;
+    padding: 11px 5px;    
+    border-bottom: 1px solid #C8102E;
+    text-align: center;
+}
