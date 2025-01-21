@@ -78,20 +78,20 @@ export default function PlayerList() {
                 <button className={styles.link} onClick={() => fetchPlayers("mpg")} >Minutes</button>
                 <button className={styles.link} onClick={() => fetchPlayers("ppg")} >Points</button>
                 <button className={styles.link} onClick={() => fetchPlayers("apg")} >Assists</button>
-                <button className={styles.link} onClick={() => fetchPlayers("orpg")} >Offensive Rebounds</button>
-                <button className={styles.link} onClick={() => fetchPlayers("drpg")} >Defensive Rebounds</button>
+                <button className={styles.link} onClick={() => fetchPlayers("orpg")} >OffRebs</button>
+                <button className={styles.link} onClick={() => fetchPlayers("drpg")} >DefRebs</button>
                 <button className={styles.link} onClick={() => fetchPlayers("rpg")} >Rebounds</button>
                 <button className={styles.link} onClick={() => fetchPlayers("spg")} >Steals</button>
                 <button className={styles.link} onClick={() => fetchPlayers("bpg")} >Blocks</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fgm")} >fgm</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fga")} >fga</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fgp")} >fgp</button>
-                <button className={styles.link} onClick={() => fetchPlayers("ftm")} >ftm</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fta")} >fta</button>
-                <button className={styles.link} onClick={() => fetchPlayers("ftp")} >ftp</button>
-                <button className={styles.link} onClick={() => fetchPlayers("tpm")} >tpm</button>
-                <button className={styles.link} onClick={() => fetchPlayers("tpa")} >tpa</button>
-                <button className={styles.link} onClick={() => fetchPlayers("tpp")} >tpp</button>
+                <button className={styles.link} onClick={() => fetchPlayers("fgm")} >FG Made</button>
+                <button className={styles.link} onClick={() => fetchPlayers("fga")} >FG Att</button>
+                <button className={styles.link} onClick={() => fetchPlayers("fgp")} >FG %</button>
+                <button className={styles.link} onClick={() => fetchPlayers("ftm")} >FT Made</button>
+                <button className={styles.link} onClick={() => fetchPlayers("fta")} >FT Att</button>
+                <button className={styles.link} onClick={() => fetchPlayers("ftp")} >FT %</button>
+                <button className={styles.link} onClick={() => fetchPlayers("tpm")} >3P Made</button>
+                <button className={styles.link} onClick={() => fetchPlayers("tpa")} >3P Att</button>
+                <button className={styles.link} onClick={() => fetchPlayers("tpp")} >3P %</button>
                 <button className={styles.link} onClick={() => fetchPlayers("fouls")} >Fouls</button>
                 <button className={styles.link} onClick={() => fetchPlayers("tos")} >Turnovers</button>
                 <button className={styles.link} onClick={() => fetchPlayers("pm")} >PlusMinus</button>

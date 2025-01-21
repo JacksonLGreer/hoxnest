@@ -61,11 +61,11 @@ app.post('/player/update_averages', (req,res) => {
 
 // Endpoint to update player stat totals
 app.post('/player/update_totals', (req,res) => {
-    const {id, totPoints, totAssists, totRebounds, totSteals, totBlocks, gamesPlayed, totMins, totOffReb, totDefReb, fgm, fga, ftm, fta, tpm, tpa, totFouls, totTOs} = req.body;
+    const {id, totPoints, totAssists, totRebounds, totSteals, totBlocks, gamesPlayed, totMins, totOffReb, totDefReb, fgm, fga, ftm, fta, tpm, tpa, totFouls, totTOs, plusminus} = req.body;
 
     // Insert the stats into the DB
-    const sql = 'UPDATE Players SET totPoints = ?, totAssists = ?, totRebounds = ?, totSteals = ?, totBlocks = ?, gamesPlayed = ?, totMins = ?, totOffReb = ?, totDefReb = ?, fgm = ?, fga = ?, ftm = ?, fta = ?, tpm = ?, tpa = ?, totFouls = ?, totTOs = ? WHERE id = ?';
-    db.run(sql, [totPoints, totAssists, totRebounds, totSteals, totBlocks, gamesPlayed, totMins, totOffReb, totDefReb, fgm, fga, ftm, fta, tpm, tpa, totFouls, totTOs, id], (err) => {
+    const sql = 'UPDATE Players SET totPoints = ?, totAssists = ?, totRebounds = ?, totSteals = ?, totBlocks = ?, gamesPlayed = ?, totMins = ?, totOffReb = ?, totDefReb = ?, fgm = ?, fga = ?, ftm = ?, fta = ?, tpm = ?, tpa = ?, totFouls = ?, totTOs = ?, plusminus = ? WHERE id = ?';
+    db.run(sql, [totPoints, totAssists, totRebounds, totSteals, totBlocks, gamesPlayed, totMins, totOffReb, totDefReb, fgm, fga, ftm, fta, tpm, tpa, totFouls, totTOs, plusminus, id], (err) => {
         if (err) {
             console.error('Error inserting stats', err.message);
         } else {

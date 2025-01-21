@@ -167,6 +167,7 @@ export default function PlayerList() {
                 let tpa = 0;
                 let totFouls = 0;
                 let totTOs = 0;
+                let plusminus = 0;
                 let gamesPlayed = playerData.length;
                 // Adding up stats
                 for (let i = 0; i < gamesPlayed; i++) {
@@ -186,7 +187,7 @@ export default function PlayerList() {
                     tpa = tpa + playerData[i].tpa;
                     totFouls = totFouls + playerData[i].fouls;
                     totTOs = totTOs + playerData[i].turnovers;
-
+                    plusminus = plusminus + playerData[i].plusminus;
                 }
                 // Update fields in DB with stats
                 try {
@@ -214,6 +215,7 @@ export default function PlayerList() {
                             totTOs: totTOs,
                             totMins: totMins,
                             gamesPlayed: gamesPlayed,
+                            plusminus: plusminus,
                         }),
                     });
                 } catch (err) {

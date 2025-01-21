@@ -26,7 +26,7 @@ export default function StatCard( {player} : {player:any} ) {
             <p>{player.tpp}</p>
             <p>{player.foulspg}</p>
             <p>{player.topg}</p>
-            <p>{player.plusMinus}</p>
+            <p>{player.plusminus}</p>
         </div>
     )
 }
