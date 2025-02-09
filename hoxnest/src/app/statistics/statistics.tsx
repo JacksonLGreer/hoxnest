@@ -27,7 +27,9 @@ export default function PlayerList() {
             setPlayerList(playerData);
             if (sort === "ppg") {
                 playerData.sort((a: {ppg: number}, b: {ppg: number}) => b.ppg - a.ppg);
-            } else if (sort ==="apg") {
+            } else if (sort ==="mpg") {
+                playerData.sort((a: {mpg: number}, b: {mpg: number}) => b.mpg - a.mpg);
+            }else if (sort ==="apg") {
                 playerData.sort((a: {apg: number}, b: {apg: number}) => b.apg - a.apg);
             } else if (sort ==="rpg") {
                 playerData.sort((a: {rpg: number}, b: {rpg: number}) => b.rpg - a.rpg);
