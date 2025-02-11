@@ -43,16 +43,18 @@ export default function PlayerList() {
             const playerData = await response.json();
             setPlayerList(playerData);
             if (sort === "ppg") {
-                playerData.sort((a: {ppg: number}, b: {ppg: number}) => b.ppg - a.ppg)
+                playerData.sort((a: {ppg: number}, b: {ppg: number}) => b.ppg - a.ppg);
             } else if (sort ==="apg") {
-                playerData.sort((a: {apg: number}, b: {apg: number}) => b.apg - a.apg)
+                playerData.sort((a: {apg: number}, b: {apg: number}) => b.apg - a.apg);
             } else if (sort ==="rpg") {
-                playerData.sort((a: {rpg: number}, b: {rpg: number}) => b.rpg - a.rpg)
+                playerData.sort((a: {rpg: number}, b: {rpg: number}) => b.rpg - a.rpg);
             } else if (sort ==="spg") {
-                playerData.sort((a: {spg: number}, b: {spg: number}) => b.spg - a.spg)
+                playerData.sort((a: {spg: number}, b: {spg: number}) => b.spg - a.spg);
             } else if (sort ==="bpg") {
-                playerData.sort((a: {bpg: number}, b: {bpg: number}) => b.bpg - a.bpg)
-            } 
+                playerData.sort((a: {bpg: number}, b: {bpg: number}) => b.bpg - a.bpg);
+            } else {
+                playerData.sort((a: {totMins: number}, b: {totMins: number}) => b.totMins - a.totMins);
+            }
             
         } catch (err) {
             console.log('Error in fetching player data: ', err);

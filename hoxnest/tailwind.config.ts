@@ -11,6 +11,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'hawks-red': '#C8102E',
+        'hawks-yellow': '#FDB927',
       },
     },
   },
