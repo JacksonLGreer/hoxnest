@@ -1,11 +1,11 @@
 import Image from "next/image";
-import Header from "../../components/nav/Header";
+import Sidebar from "../../components/nav/Sidebar";
 import GameList from "../../components/GameList";
 export default function Home() {
   return (
-    <div>
-      <Header />
-      <div>      
+    <div className="flex">
+      <Sidebar />
+      <div className="m-10">      
         <GameList />
       </div>
     </div>

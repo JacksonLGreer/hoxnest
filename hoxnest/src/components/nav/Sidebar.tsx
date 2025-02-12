@@ -15,7 +15,7 @@ export default function Sidebar() {
                     <Chart  />
                     <p className="flex items-center gap-2 font-semibold p-4" >Statistics</p>
                 </button>
-                <button className=" pl-6 text-sm flex items-center h-[50px] bg-black hover:bg-hawks-red p-2 text-hawks-yellow w-full" onClick={() => router.push('./statistics')}>
+                <button className=" pl-6 text-sm flex items-center h-[50px] bg-black hover:bg-hawks-red p-2 text-hawks-yellow w-full" onClick={() => router.push('./schedule')}>
                     <Calendar  />
                     <p className="flex items-center gap-2 font-semibold p-4" >Schedule</p>
                 </button>
