@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import styles from "./statistics.module.css";
 import StatCard from "./StatCard";
 
-export default function PlayerList() {
+export default function Statistics() {
 
     const [playerList, setPlayerList] = useState([]);
 
@@ -73,30 +73,31 @@ export default function PlayerList() {
     }
 
     return (
+        //border-b-2 border-hawks-red border-double p-[10px] h-[650px]
         <div className={styles.box}>
-            <div className={styles.listTop}>
+            <div className="grid grid-cols-22custom text-center font-bold pt-5px border-b-2 border-hawks-red">
                 <p>Name</p>
                 <p>Position</p>
-                <button className={styles.link} onClick={() => fetchPlayers("mpg")} >Minutes</button>
-                <button className={styles.link} onClick={() => fetchPlayers("ppg")} >Points</button>
-                <button className={styles.link} onClick={() => fetchPlayers("apg")} >Assists</button>
-                <button className={styles.link} onClick={() => fetchPlayers("orpg")} >OffRebs</button>
-                <button className={styles.link} onClick={() => fetchPlayers("drpg")} >DefRebs</button>
-                <button className={styles.link} onClick={() => fetchPlayers("rpg")} >Rebounds</button>
-                <button className={styles.link} onClick={() => fetchPlayers("spg")} >Steals</button>
-                <button className={styles.link} onClick={() => fetchPlayers("bpg")} >Blocks</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fgm")} >FG Made</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fga")} >FG Att</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fgp")} >FG %</button>
-                <button className={styles.link} onClick={() => fetchPlayers("ftm")} >FT Made</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fta")} >FT Att</button>
-                <button className={styles.link} onClick={() => fetchPlayers("ftp")} >FT %</button>
-                <button className={styles.link} onClick={() => fetchPlayers("tpm")} >3P Made</button>
-                <button className={styles.link} onClick={() => fetchPlayers("tpa")} >3P Att</button>
-                <button className={styles.link} onClick={() => fetchPlayers("tpp")} >3P %</button>
-                <button className={styles.link} onClick={() => fetchPlayers("fouls")} >Fouls</button>
-                <button className={styles.link} onClick={() => fetchPlayers("tos")} >Turnovers</button>
-                <button className={styles.link} onClick={() => fetchPlayers("pm")} >PlusMinus</button>
+                <button className="" onClick={() => fetchPlayers("mpg")} >Minutes</button>
+                <button className="" onClick={() => fetchPlayers("ppg")} >Points</button>
+                <button className="" onClick={() => fetchPlayers("apg")} >Assists</button>
+                <button className="" onClick={() => fetchPlayers("orpg")} >OffRebs</button>
+                <button className="" onClick={() => fetchPlayers("drpg")} >DefRebs</button>
+                <button className="" onClick={() => fetchPlayers("rpg")} >Rebounds</button>
+                <button className="" onClick={() => fetchPlayers("spg")} >Steals</button>
+                <button className="" onClick={() => fetchPlayers("bpg")} >Blocks</button>
+                <button className="" onClick={() => fetchPlayers("fgm")} >FG Made</button>
+                <button className="" onClick={() => fetchPlayers("fga")} >FG Att</button>
+                <button className="" onClick={() => fetchPlayers("fgp")} >FG %</button>
+                <button className="" onClick={() => fetchPlayers("ftm")} >FT Made</button>
+                <button className="" onClick={() => fetchPlayers("fta")} >FT Att</button>
+                <button className="" onClick={() => fetchPlayers("ftp")} >FT %</button>
+                <button className="" onClick={() => fetchPlayers("tpm")} >3P Made</button>
+                <button className="" onClick={() => fetchPlayers("tpa")} >3P Att</button>
+                <button className="" onClick={() => fetchPlayers("tpp")} >3P %</button>
+                <button className="" onClick={() => fetchPlayers("fouls")} >Fouls</button>
+                <button className="" onClick={() => fetchPlayers("tos")} >Turnovers</button>
+                <button className="" onClick={() => fetchPlayers("pm")} >PlusMinus</button>
             </div>
             {playerList.map((player, index) => (
                 <StatCard 
